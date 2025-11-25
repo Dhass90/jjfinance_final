@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block extra_head %}
+    <meta charset="UTF-8">
+    <title>JJ FINANCIAL SERVICES{{ bill.fullname }}</title>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            .page-break { page-break-before: always; }
+            body, .container, .page { margin: 0 !important; box-shadow: none !important; border-radius: 0 !important; }
+            @page { margin: 0; }
+        }
+        body {
+            font-family: 'Noto Sans Malayalam', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #fff;
+        }
+        .container_new, .page_new {
+            max-width: 900px;
+            margin: 20px auto;
+            background: #fff;
+            padding-left: 15px;
+            padding-right: 15px;
+            border: 2px solid #222;
+            box-sizing: border-box;
+        }
+        .header, .footer {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .section { margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; }
+        td, th { padding: 4px 6px; vertical-align: top; }
+        .bold { font-weight: bold; }
+        .right { text-align: right; }
+        .box { border: 1px solid #000; padding: 8px; }
+        .thumb { width: 80px; height: 100px; border: 1px solid #000; }
+        .rules { margin-top: 10px; }
+        .rules li { margin-bottom: 6px; }
+        .foot-logos { display: flex; gap: 8px; align-items: center; justify-content: space-between; margin-top: 10px; border-top: 1px solid #ddd; padding-top: 8px; }
+        .logo-box { flex: 1; text-align: center; font-size: 11px; }
+        .logo-box img { max-width: 100%; height: auto; display: block; margin: 0 auto 4px; }
+        .contacts { font-size: 11px; color: #222; }
+    </style>
+{% endblock %}
+
+{% block content %}<div class="container_new" style="max-width: 900px; margin: 20px auto; border: 2px solid #222; border-radius: 10px; padding: 10px 8px; font-size: 10px;">
+    <div class="header" style="margin-bottom: 8px;">
+        <img src="{% static 'images/logo.jpg' %}" alt="JJ Logo" style="height: 48px; margin-right: 18px;">
+        <h2 style="margin-bottom: 4px; font-size: 1.1em;">JJ FINANCIAL SERVICES</h2>
+        <p style="margin:0; font-size: 10px;">
+            KML No: 32050301951, Sacred Heart Church Building, Room No. 523D, Ground Floor, Monippally P.O, Kottayam -686636, Kerala<br>
+            Mob: +91 8156889434, +91 7306887881
+        </p>
+        <hr style="margin: 6px 0;">
+        <h4 style="margin:0; font-size: 1em;">Customer Copy</h4>
+    </div>
+    <div class="section" style="margin-bottom: 6px;">
+        <table style="width:100%; font-size: 10px;">
+            <tr>
+                <td class="bold">അപേക്ഷകൻ്റെ പേര്:</td>
+                <td>{{ bill.fullname }}</td>
+                <td class="bold">ലോൺ നമ്പർ:</td>
+                <td>{{ bill.loan_id }}</td>
+            </tr>
+            <tr>
+                <td class="bold">വിലാസം:</td>
+                <td>{{ bill.address }}</td>
+                <td class="bold">മൊബൈൽ നമ്പർ:</td>
+                <td>{{ bill.phone1 }}</td>
+            </tr>
+            <tr>
+                <td class="bold">നോമിനി:</td>
+                <td>{{ bill.nominee_name }}</td>
+                <td class="bold">ബന്ധം:</td>
+                <td>{{ bill.nominee_relation }}</td>
+            </tr>
+            <tr>
+                <td class="bold">കസ്റ്റമർ നമ്പർ:</td>
+                <td>{{ bill.customer_id }}</td>
+                <td class="bold">തിയ്യതി:</td>
+                <td>{{ bill.created|date:"Y-m-d" }}</td>
+            </tr>
+            <tr>
+                <td class="bold">പലിശ നിരക്ക്:</td>
+                <td>{{ bill.initial_intrest }}% (Compound)</td>
+                <td class="bold">വായ്പാ തുക:</td>
+                <td>₹{{ bill.amount }}</td>
+            </tr>
+            <tr>
+                <td class="bold">Customer Image:</td>
+                <td>
+                    {% if bill.image %}
+                        <img src="{{ bill.image.url }}" alt="Customer Image" style="max-width:100px; border-radius:3px; border:1px solid #eee;">
+                    {% else %}
+                        No image
+                    {% endif %}
+                </td>
+                <td class="bold">Ornament Image:</td>
+                <td>
+                    {% if bill.ornament_image %}
+                        <img src="{{ bill.ornament_image.url }}" alt="Ornament Image" style="max-width:100px; border-radius:3px; border:1px solid #eee;">
+                    {% else %}
+                        No image
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="section" style="margin-bottom: 6px;">
+        <p class="bold" style="margin:0;">സ്വർണ്ണം:</p>
+        <table border="1" style="font-size: 10px;">
+            <tr>
+                <th>Type</th>
+                <th>Number</th>
+                <th>Total Net Weight</th>
+            </tr>
+            <tr><td>Bangle</td><td>{{bill.bangle_count}} no.s</td><td>{{ bill.bangle_weight }} gm</td></tr>
+            <tr><td>Chain</td><td>{{bill.chain_count}} no.s</td><td>{{ bill.chain_weight }} gm</td></tr>
+            <tr><td>Ring</td><td>{{bill.ring_count}} no.s</td><td>{{ bill.ring_weight }} gm</td></tr>
+            <tr><td>Necklace</td><td>{{bill.necklace_count}} no.s</td><td>{{ bill.necklace_weight }} gm</td></tr>
+            <tr><td>Bracelet</td><td>{{bill.bracelet_count}} no.s</td><td>{{ bill.bracelet_weight }} gm</td></tr>
+            <tr><td>Other:{{bill.others_details}}</td><td>{{bill.others_count}} no.s</td><td>{{ bill.others_weight }} gm</td></tr>
+            <tr>
+                <td colspan="2" style="text-align: right; font-weight: bold;">Total Weight =</td>
+                <td style="font-weight: bold;">{{ bill.ornament_weight }} gm</td>
+            </tr>
+        </table>
+    </div>
+    <div class="section" style="font-size: 10px;">
+        <b>വ്യക്തിപരമായ ആവശ്യത്തിലേക്കായി എനിക്ക് ജെ.ജെ. ഫിനാൻഷ്യൽ സർവീസിൽ നിന്നും <u> <b>{{bill.amount}} </b></u> രൂപ വായ്പയായി നൽകണമെന്ന് അപേക്ഷിക്കുന്നു. ടി വായ്പയുടെ പലിശയും മുതലും മറ്റ് അനുബന്ധ ചാർജുകളും ഉൾപ്പെട്ട തുകയുടെ ഉറപ്പിലേയ്ക്കായി മുകളിൽ കാണിച്ചിരിക്കുന്നതും എൻ്റെ കൈവശത്തിലും പൂർണ്ണ ഉടമസ്ഥതയിലുമുള്ള സ്വർണ്ണ ഉരുപ്പടികൾ പണയമായി സ്വീകരിച്ചുകൊണ്ട് എനിക്ക് വായ്പ അനുവദിക്കണമെന്ന് അപേക്ഷിച്ച് കൊള്ളുന്നു.</b>
+        <br><br>
+        ജെ.ജെ. ഫിനാൻഷ്യൽ സർവീസിൽ നിന്നും ഇന്നേ ദിവസം സ്വർണ്ണപണയ വായ്പയായി കൈപ്പറ്റിയ<u> <b> {{bill.amount}} </b></u>രൂപാ മുതൽ ബാക്കി നിൽപ്പിന്<u> <b> {{bill.initial_intrest}}% </b></u>അടിസ്ഥാന വാർഷിക പലിശ നിരക്കിൽ ജെ.ജെ. ഫിനാൻഷ്യൽ സർവീസ് എന്ന സ്ഥാപനത്തിന് അവർ ആവശ്യപ്പെടുംവിധം മുകളിൽ പറഞ്ഞ പലിശനിരക്കിൽ ഇന്ന് മുതൽ വായ്പ പൂർണ്ണമായും അടച്ച് തീർക്കുന്ന തീയതി വരെ വാർഷിക പലിശയടക്കം തിരിച്ചടച്ച് കൊള്ളാമെന്ന് ഞാൻ വാഗ്ദാനം ചെയ്യുന്നു. ഏതെങ്കിലും കാരണവശാൽ ഞാൻ കൈപ്പറ്റിയ മേൽ കാണിച്ച വായ്പ തുക അടയ്ക്കാതെ മുടക്കം വരുത്തുകയോ സ്വർണ്ണ വിലയിൽ ഇടിവ് ഉണ്ടാവുകയോ പിന്നീടുള്ള വിദഗ്ധ പരിശോധനയിൽ സ്വർണ്ണത്തിൻ്റെ മാറ്റിൽ കുറവ് വരുകയോ ചെയ്താൽ കമ്പനിക്ക് അനുവദിച്ചിരിക്കുന്ന കാലാവധിക്ക് മുന്നേതന്നെ എൻ്റെ അറിവോടുകൂടി സ്വർണ്ണ ഉരുപ്പടികൾ നിയമാനുസൃതമായി ലേലം ചെയ്തോ അല്ലാതെയോ വിറ്റ് വായ്പ തുക ഈടാക്കുന്നതിന് കമ്പനിക്ക് അധികാരം ഉണ്ടായിരിക്കുന്നതാണ്.
+    </div>
+    <div style="margin-top: 10px;">
+        <table style="width:100%; font-size: 10px;">
+            <tr>
+                <td><b>സ്ഥലം:</b> _______________________</td>
+                <td><b>വായ്പക്കാരൻ്റെ പേര്:</b><u> <b>{{bill.fullname}}</b></u> </td>
+            </tr>
+            <tr>
+                <td><b>തീയതി:</b> {{ bill.created|date:"Y-m-d" }}</td>
+                <td><b>ഒപ്പ്:</b> _______________________</td>
+            </tr>   
+        </table>
+    </div>
+    <div class="section box" style="font-size: 10px; font-weight: bold; text-align: center;">
+       <div style="font-size: 12px; font-weight: bold; text-align: center; text-decoration: underline; margin-bottom: 8px;">
+            പണയ ആഭരണങ്ങൾ തിരികെ കൈപ്പറ്റുന്നതിനുള്ള രസീത്
+        </div>
+   
+    <div class="receipt-body" style="font-size: 10px; margin-bottom: 10px;">
+        ടി വായ്പയുടെ ഉറപ്പിലേയ്ക്കായി നൽകിയിരുന്ന മുകളിലെ പട്ടിക പ്രകാരമുള്ള ആഭരണങ്ങൾ ഇന്നേ ദിവസം എനിക്ക് കേടുപാടുകൾ കൂടാതെ അവയുടെ യഥാസ്ഥിതിയിൽ തിരിച്ചേൽപ്പിച്ചിരിക്കുന്നു.
+    </div>
+    <table class="sign-table" style="width:100%; font-size: 10px; margin-top: 10px;">
+        <tr>
+            <td><b>സ്ഥലം:</b> _______________________</td>
+            <td><b>വായ്പക്കാരൻ്റെ ഒപ്പ്:</b> _______________________</td>
+        </tr>
+        <tr>
+            <td><b>തീയതി:</b> _______________________</td>
+            <td></td>
+        </tr>
+    </table>
+    </div>
+    <div class="footer">
+        <hr>
+        <p style="font-size:9px;">Printed on {{ printed_time|date:"Y-m-d H:i:s" }}</p>
+    </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PAGE 2: TERMS & CONDITIONS -->
+<div class="page_new" style="font-size: 12px; line-height: 1.2; padding: 12px 12px 8px 12px; max-width: 900px; margin: 0 auto;">
+    <header>
+      <h1 style="text-align:center; font-size: 15px; margin-bottom: 4px;">നിബന്ധനകൾ</h1>
+    </header>
+    <hr class="line" style="margin: 6px 0;" />
+    <div>
+        <p><b>1.</b> കുറഞ്ഞ പലിശ 200 രൂപയായി നിജപ്പെടുത്തിയിരിക്കുന്നു. വായ്പ 7 ദിവസത്തിനുള്ളിൽ തിരിച്ചടക്കുകയാണെങ്കിൽ കുറഞ്ഞത് 7 ദിവസത്തെ പലിശ ഈടാക്കുന്നതായിരിക്കും.</p>
+        <p><b>2.</b> പ്രവൃത്തി ദിവസങ്ങളിലെ ഓഫീസ് സമയങ്ങളിൽ മാത്രമേ വായ്പകളുടെ വാങ്ങൽ/തിരിച്ചടവ്/പലിശയടക്കൽ തുടങ്ങിയവ നടത്താനാവുകയുള്ളൂ. ഏതെങ്കിലും ഇടപാട്/തിരിച്ചടവിനുള്ള അവസാന തീയതി ഒരു അവധി ദിവസത്തിൽ വരികയാണെങ്കിൽ അതിന് തൊട്ട് മുമ്പുള്ള പ്രവർത്തി ദിവസം അത്തരം ഇടപാടുകൾക്കുള്ള അവസാന ദിനമായി പരിഗണിക്കുന്നതായിരിക്കും.</p>
+        <p><b>3.</b> വായ്പ പദ്ധതികൾ/പലിശനിരക്കുകൾ/മറ്റ് അനുബന്ധ ചാർജുകൾ എന്നിവയിൽ മാറ്റം വരുത്തുവാനുള്ള പൂർണ അധികാരം സ്ഥാപനത്തിനുണ്ടായിരിക്കുന്നതാണ്.</p>
+        <p><b>4.</b> വായ്പാ തുക പലിശ സഹിതം, വായ്പ എടുത്തയാളോ, അയാൾ ചുമതലപ്പെടുത്തുന്ന വ്യക്തിയോ, മുഴുവൻ വായ്പാ തുകയും പലിശയും കമ്പനിക്ക് തിരിച്ചടച്ചതിന് ശേഷം മാത്രമേ പണയാഭരണങ്ങൾ തിരികെ നൽകുകയുള്ളൂ. ആഭരണങ്ങൾ തിരികെ നൽകുന്നതിന് മുൻപായി കസ്റ്റമർ രസീത് തിരിച്ച് ഏൽപ്പിക്കേണ്ടതാകുന്നു. നാമനിർദ്ദേശം ചെയ്ത അവകാശിയില്ലാതെ വായ്പ എടുത്ത ആൾ മരണപ്പെടുന്ന പക്ഷം ആഭരണങ്ങൾ നിയമാനുസൃതമായുള്ള അനന്തരാവകാശികൾക്ക് മാത്രമേ നൽകൂ.</p>
+        <p><b>5.</b> വായ്പാ തുകയോ പലിശയോ തിരിച്ചടക്കാൻ ഓരോ തവണ വരുമ്പോഴും പണയ രസീത് കൊണ്ടുവരേണ്ടതും വായ്പ അവസാനിക്കുന്ന സമയം പ്രസ്തുത രസീത് സ്ഥാപനത്തിന് തിരികെ ഏൽപ്പിക്കേണ്ടതുമാണ്.</p>
+        <p><b>6.</b> പണയ രസീത് നഷ്ടമാകുന്ന സാഹചര്യത്തിൽ പണയം തിരിച്ചെടുക്കേണ്ടതായി വരുമ്പോൾ പണയക്കാരൻ നേരിട്ട് ഹാജരാകേണ്ടതും സ്ഥാപനം നിർദ്ദേശിക്കുന്ന നിശ്ചിത മാതൃകയിൽ, നിശ്ചിത തുകക്കുള്ള മുദ്രപത്രത്തിൽ ബോണ്ട് ഹാജരാക്കേണ്ടതുമാണ്.</p>
+        <p><b>7.</b> വായ്പ ഭാഗികമായാണ് തിരിച്ചടക്കുന്നതെങ്കിൽ അടച്ച തുക ആദ്യം പലിശയും ബാക്കി നൽകുന്ന വായ്പയുടെ മറ്റ് ചാർജുകളും ഈടാക്കാൻ ഉപയോഗിച്ച ശേഷം ബാക്കിയുണ്ടെങ്കിൽ അത് മുതലിൽ കുറവ് ചെയ്യുന്നതായിരിക്കും.</p>
+        <p><b>8.</b> വായ്പ അപേക്ഷയിൽ നൽകിയിരിക്കുന്ന മേൽവിലാസത്തിലോ ഫോൺ നമ്പറിലോ ഏതെങ്കിലും മാറ്റമുണ്ടായാൽ അത് ഉടനെതന്നെ സ്ഥാപനത്തെ രേഖാമൂലം അറിയിക്കേണ്ടതാണ്. അങ്ങനെ ചെയ്യാത്തപക്ഷം അപേക്ഷയിൽ കൊടുത്തിട്ടുള്ള മേൽവിലാസത്തിൽ അയക്കുന്ന ഡിമാൻഡ് നോട്ടീസ്, ലേലനോട്ടീസ്, മറ്റ് അറിയിപ്പുകൾ എന്നിവ ബാധ്യതക്കാരന് ലഭിച്ചതായി പരിഗണിക്കപ്പെടുന്നതായിരിക്കും.</p>
+        <p><b>9.</b> പലിശ, മുതൽ തിരിച്ചടവ് ഓർമ്മപ്പെടുത്തിക്കൊണ്ടും സ്ഥാപനത്തിൻ്റെ പുതിയ പദ്ധതികളെക്കുറിച്ചും സേവനങ്ങളെക്കുറിച്ചും എസ്.എം.എസ്. സന്ദേശങ്ങളും മറ്റ് ആശയവിനിമയങ്ങളും വായ്പക്കാരനുമായി ടി വ്യക്തി അപേക്ഷയിൽ നൽകിയിട്ടുള്ള ഫോൺ നമ്പറിൽ നടത്താനുള്ള അവകാശം സ്ഥാപനത്തിന് ഉണ്ടായിരിക്കുന്നതാണ്.</p>
+        <p><b>10.</b> ഈടായി ഹാജരാക്കുന്ന സ്വർണ്ണ ഉരുപ്പടികളുടെ പരിശുദ്ധി ആവശ്യമായ സാഹചര്യങ്ങളിൽ സ്ഥാപനം സ്വീകരിക്കുന്ന വിവിധ രീതികളിൽ പരിശോധിക്കുന്നതിന് സ്ഥാപനത്തിൻ്റെ ഉടമയ്ക്ക് പൂർണ്ണ അധികാരം ഉണ്ടായിരിക്കുന്നതാണ്.</p>
+        <p><b>11.</b> വിലപിടിപ്പുള്ള ഡയമണ്ട് മുതലായ കല്ല് പതിച്ച ആഭരണങ്ങൾ പണയമായി സ്വീകരിക്കുന്നതല്ല. ആഭരണങ്ങളിൽ പതിപ്പിച്ചിരിക്കുന്ന കല്ലുകൾ വിലപിടിപ്പുള്ളതാണെന്ന വാദം സ്ഥാപനം അംഗീകരിക്കുന്നതല്ല.</p>
+        <p><b>12.</b> പണയപ്പെടുത്തുന്ന ആഭരണം പൂർണ്ണമായും വായ്പയെടുക്കുന്നയാളുടെ സ്വന്തമായിരിക്കണം. അതിൽമേൽ മറ്റാർക്കും അവകാശമോ മറ്റോ ഉണ്ടായിരിക്കാൻ പാടില്ല. പണയം വയ്ക്കാനുള്ള പൂർണ്ണമായ അവകാശം വായ്പ എടുക്കുന്നയാൾക്കായിരിക്കും. ആഭരണങ്ങളുടെ ഉടമസ്ഥത സംബന്ധിച്ച് എന്തെങ്കിലും ന്യൂനതകൾ ഉണ്ടായാൽ കമ്പനിക്കുണ്ടാകുന്ന എല്ലാ കഷ്ടനഷ്ടങ്ങൾക്കും മറ്റ് ചിലവുകൾക്കും വായ്പ എടുക്കുന്നയാൾ പരിഹാരം നൽകേണ്ടതാണ്.</p>
+        <p><b>13.</b> വായ്പ തിരികെ അടയ്ക്കുവാൻ നിശ്ചയിക്കുന്ന അവധിക്കുള്ളിൽ അടച്ച് ആഭരണങ്ങൾ തിരികെ വാങ്ങേണ്ടതാണ്. അതിന് വീഴ്ച വരുത്തിയാൽ മുതൽ, പലിശ, മറ്റ് ചാർജുകൾ എന്നിവ അടച്ച് തീർക്കുവാൻ എഴുത്ത് മൂലം ആവശ്യപ്പെടാവുന്നതും അങ്ങനെ ആവശ്യപ്പെട്ടിട്ടും അടച്ചില്ലെങ്കിൽ പണയ ആഭരണങ്ങൾ ലേലത്തിലോ മറ്റ് പ്രകാരത്തിലോ വിൽക്കുന്നതും പോരാതെ വരുന്ന തുക ഇടപാടുകാരൻ്റെ പക്കൽ നിന്നും കൈപ്പറ്റുന്നതുമായിരിക്കും. പണയം വയ്ക്കുന്ന വ്യക്തി അപേക്ഷയിൽ നൽകുന്ന മേൽവിലാസത്തിൽ എഴുത്തയച്ചാൽ രേഖാമൂലം ആവശ്യപ്പെട്ടതായി വിചാരിക്കപ്പെടും.</p>
+        <p><b>14.</b> പണയം വച്ച ആഭരണം ലേലത്തിലേക്ക് നീങ്ങുകയാണെങ്കിൽ ലേലത്തിൽ നിന്ന് ലഭിക്കുന്ന മിച്ച തുക നിലവിലുള്ള കുടിശ്ശിക വായ്പകൾ എന്തെങ്കിലും ഉണ്ടെങ്കിൽ അത് ക്രമീകരിച്ചതിന്ശേഷം ഉപഭോക്താവിന് തിരികെ നൽകും.</p>
+        <p><b>15.</b> ഏതെങ്കിലും ഒരു വായ്പ പദ്ധതി നിർത്തലാക്കുവാൻ സ്ഥാപനം തീരുമാനിക്കുകയാണെങ്കിൽ തുടർന്ന് ആ പദ്ധതിയിൻ കീഴിൽ വായ്പ അനുവദിക്കുന്നതല്ല. നിർത്തലാക്കപ്പെട്ട വായ്പാ പദ്ധതിയിൻ കീഴിൽ വായ്പ അനുവദിക്കുന്നതല്ല. നിർത്തലാക്കപ്പെട്ട വായ്പ, പദ്ധതിയിൻ കീഴിൽ വായ്പ നിലവിലുള്ള ബാധ്യതക്കാരൻ പലിശ അടച്ച് പുതുക്കുവാൻ ആഗ്രഹിക്കുന്നുവെങ്കിൽ ഇപ്പോഴുള്ള വായ്പ തുക ലഭ്യമാക്കാൻ ഉതകുന്ന നിലവിലുള്ള മറ്റേതെങ്കിലും വായ്പ പദ്ധതിയിൽ പുതുക്കേണ്ടതാണ്.</p>
+        <p><b>16.</b> ഈ വായ്പാ സംബന്ധമായ എല്ലാ രേഖകളും ഞാൻ വായിച്ച് മനസ്സിലാക്കിയിട്ടുള്ളതാണ് ഇതിൽ നൽകിയിട്ടുള്ള വിവരങ്ങളും വിവരണങ്ങളും എൻ്റെ അറിവിൽ പെട്ടതും ശരിയും പൂർണ്ണ സത്യവുമാണ്. ഈ വായ്പ സംബന്ധമായ എല്ലാ രേഖകളുടെയും ഓരോ കോപ്പി വീതം എനിക്ക് ലഭിച്ചിട്ടുള്ളതാണ്.</p>
+        <p>ജെ.ജെ. ഫിനാൻഷ്യൽ സർവീസിൽ നിന്നും നൽകുന്ന സ്വർണ്ണ വായ്പാ പദ്ധതിയെ കുറിച്ചുള്ള എല്ലാ രേഖകളും ലഭിച്ചിരിക്കുന്നു. പണയം വയ്ക്കുന്ന ആഭരണങ്ങളുടെ പൂർണ്ണ ഉടമസ്ഥത എനിക്ക് മാത്രമാണെന്നും ഉടമസ്ഥതയെ സംബന്ധിച്ച് ഏതെങ്കിലും തർക്കം ഭാവിയിൽ ഉണ്ടായാൽ സ്ഥാപനത്തിന് ഉണ്ടാകുന്ന എല്ലാ ബാധ്യതകൾക്കും ഞാൻ മാത്രമാണ് ഉത്തരവാദി എന്ന് ഉറപ്പ് നൽകുന്നു. ഈ അപേക്ഷയിൽ പ്രതിപാദിച്ചിട്ടുള്ള എല്ലാ നിബന്ധനകളും ഞാൻ വായിച്ച് പൂർണ്ണമായും മനസ്സിലാക്കുകയും ഈ സമ്മത പത്രത്തിൽ സ്വമനസ്സാലെ സമ്മതം രേഖപ്പെടുത്തിയിട്ടുള്ളതാണ്. ഇതിലെ എല്ലാ വിവരങ്ങളും എനിക്ക് മനസ്സിലാകുന്ന ഭാഷയിൽ വിവരിച്ച് തന്നിട്ടുള്ളതും അവ പൂർണ്ണമായി മനസ്സിലാക്കിയിട്ടുള്ളതുമാകുന്നു. അപ്രകാരം അത് നിറവേറ്റുന്നതിന് ഞാൻ ബാധ്യസ്ഥനാണെന്നും പൂർണ്ണ സമ്മതത്തോടെ ഞാൻ ഈ ഉടമ്പടിയിൽ ഏർപ്പെടുകയും ചെയ്യുന്നു.</p>
+    </div>
+    <div style="margin-top: 12px;">
+        <table style="margin-top:12px; font-size: 12px;">
+   
+    <tr><td><b>സ്ഥലം:</b> _______________________</td>
+    <td><b>പേര്:</b> _______________________</td></tr>
+    <tr><td><b>തീയതി:</b> {{ printed_time|date:"Y-m-d " }}</td>
+        <td><b>ഒപ്പ്:</b> _______________________</td></tr>
+</table>
+    </div>
+    
+   <br>
+    <center><button class="no-print" onclick="window.print()">Print This Page</button></center>
+</div>
+
+{% endblock %}

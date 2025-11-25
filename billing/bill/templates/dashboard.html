@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<h2 style="text-align:center; color:#35424a;">Dashboard</h2>
+<form method="get" style="text-align:center; margin-bottom: 30px;">
+    <label>From: <input type="date" name="start_date" value="{{ start_date }}"></label>
+    <label>To: <input type="date" name="end_date" value="{{ end_date }}"></label>
+    <button type="submit" style="padding: 6px 18px; background: #35424a; color: #fff; border: none; border-radius: 4px;">Filter</button>
+    <button type="submit" name="show" value="customers" style="padding: 6px 18px; background: #43a047; color: #fff; border: none; border-radius: 4px; margin-left: 10px;">Customers Only</button>
+    <button type="submit" name="show" value="payments" style="padding: 6px 18px; background: #35424a; color: #fff; border: none; border-radius: 4px; margin-left: 5px;">Payments Only</button>
+</form>
+
+{% if show == 'customers' %}
+    <h3 style="color:#222;">New Customers ({{ customer_count }})</h3>
+    <h3 style="color:#222;">Toatal Loaned Amount ({{ total_loaned_amount }})</h3>
+    
+    {% if customers %}
+        <table id="customerTable" class="display" style="width:100%;">
+            <thead>
+                <tr><th>Created</th>
+                    <th>Loan ID</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Amount</th>
+                    <th>Intrest Rate</th>
+                    <th>Address</th>
+                    <th>Ornament Weight</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+            {% for c in customers %}
+                <tr>
+                    <td>{{ c.created|date:"Y-m-d H:i" }}</td>
+                    <td>{{ c.loan_id }}</td>
+                    <td>{{ c.fullname }}</td>
+                    <td>{{ c.phone1 }}</td>
+                    <td>{{ c.amount }}</td>
+                    <td>{{ c.initial_intrest }}</td>
+                    <td>{{ c.address }}</td>
+                    <td>{{c.ornament_weight}}</td>
+                    
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="color:#888;">No new customers in this period.</p>
+    {% endif %}
+{% else %}
+    <h3 style="color:#222;">New Payments ({{ payment_count }})</h3>
+    <h3 style="color:#222;">Total Received Amount ({{ total_payment_amount }})</h3>
+    {% if payments %}
+        <table id="paymentTable" class="display" style="width:100%;">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Current Interest</th>
+                    <th>Payment Method</th>
+                    <th>Notes</th>
+                    <th>Loan ID</th>
+                    <th>Customer Name</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for p in payments %}
+                <tr>
+                    <td>{{ p.date|date:"Y-m-d H:i" }}</td>
+                    <td>{{ p.amount }}</td>
+                    <td>{{ p.current_intrest }}</td>
+                    <td>{{ p.payment_method }}</td>
+                    <td>{{ p.notes }}</td>
+                    <td>{{ p.billtable.loan_id }}</td>
+                    <td>{{ p.billtable.fullname }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="color:#888;">No new payments in this period.</p>
+    {% endif %}
+{% endif %}
+
+<script>
+  $(document).ready(function() {
+    $('#customerTable').DataTable();
+    $('#paymentTable').DataTable();
+  });
+</script>
+{% endblock %}

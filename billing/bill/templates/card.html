@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 850px; margin: 40px auto; background: #fff; border-radius: 14px; box-shadow: 0 2px 16px rgba(0,0,0,0.10); padding: 40px 48px;">
+    <h2 style="text-align:center; color:#35424a; margin-bottom: 32px;">Customer & Loan Details</h2>
+    
+    <!-- Customer Details -->
+    <div style="margin-bottom: 28px;">
+        <h3 style="color:#222; border-bottom:1px solid #eee; padding-bottom:6px;">Customer Details</h3>
+        <table style="width:100%; border-collapse:collapse;">
+            <tr><th>Customer ID</th><td>{{ bill.customer_id }}</td><th>Loan ID</th><td>{{ bill.loan_id }}</td></tr>
+            <tr><th>Created</th><td>{{ bill.created|date:"Y-m-d H:i" }}</td><th>Status</th><td>{% if bill.status %}Active{% else %}Inactive{% endif %}</td></tr>
+            <tr><th>Fullname</th><td>{{ bill.fullname }}</td><th>Email</th><td>{{ bill.email|default:"-" }}</td></tr>
+            <tr><th>Phone 1</th><td>{{ bill.phone1 }}</td><th>Phone 2</th><td>{{ bill.phone2|default:"-" }}</td></tr>
+            <tr><th>Date of Birth</th><td>{{ bill.dateofbirth|default:"-" }}</td><th>Address</th><td>{{ bill.address }}</td></tr>
+            <tr>
+                <th>Customer Image</th>
+                <td colspan="3">
+                    {% if bill.image %}
+                        <img src="{{ bill.image.url }}" alt="Customer Image" style="max-width:120px; border-radius:6px; border:1px solid #eee;">
+                    {% else %}
+                        No image uploaded.
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <!-- Nominee Details -->
+    <div style="margin-bottom: 28px;">
+        <h3 style="color:#222; border-bottom:1px solid #eee; padding-bottom:6px;">Nominee Details</h3>
+        <table style="width:100%; border-collapse:collapse;">
+            <tr><th>Name</th><td>{{ bill.nominee_name }}</td><th>Relation</th><td>{{ bill.nominee_relation }}</td></tr>
+            <tr><th>Phone</th><td>{{ bill.nominee_phone }}</td><th>Address</th><td>{{ bill.nominee_address }}</td></tr>
+        </table>
+    </div>
+    
+    <!-- Ornament Details -->
+    <div style="margin-bottom: 28px;">
+        <h3 style="color:#222; border-bottom:1px solid #eee; padding-bottom:6px;">Ornament Details</h3>
+        <table style="width:100%; border-collapse:collapse;">
+            <tr>
+                <th>Type</th>
+                <th>Count</th>
+                <th>Weight (g)</th>
+            </tr>
+            <tr><td>Chain</td><td>{{ bill.chain_count }}</td><td>{{ bill.chain_weight }}</td></tr>
+            <tr><td>Ring</td><td>{{ bill.ring_count }}</td><td>{{ bill.ring_weight }}</td></tr>
+            <tr><td>Earing</td><td>{{ bill.earing_count }}</td><td>{{ bill.earing_weight }}</td></tr>
+            <tr><td>Bracelet</td><td>{{ bill.bracelet_count }}</td><td>{{ bill.bracelet_weight }}</td></tr>
+            <tr><td>Bangle</td><td>{{ bill.bangle_count }}</td><td>{{ bill.bangle_weight }}</td></tr>
+            <tr><td>Necklace</td><td>{{ bill.necklace_count }}</td><td>{{ bill.necklace_weight }}</td></tr>
+            <tr><td>Others</td><td>{{ bill.others_count }}</td><td>{{ bill.others_weight }}</td></tr>
+            <tr><td>Other Details</td><td colspan="2">{{ bill.others_details|default:"-" }}</td></tr>
+            <tr>
+                <th>Ornament Image</th>
+                <td colspan="2">
+                    {% if bill.ornament_image %}
+                        <img src="{{ bill.ornament_image.url }}" alt="Ornament Image" style="max-width:120px; border-radius:6px; border:1px solid #eee;">
+                    {% else %}
+                        No image uploaded.
+                    {% endif %}
+                </td>
+            </tr>
+            
+            <tr><th>Total Weight</th><td colspan="2">{{ bill.ornament_weight }}</td></tr>
+            <tr><th>Net Weight</th><td colspan="2">{{ bill.ornament_net_weight }}</td></tr>
+        </table>
+    </div>
+    
+    <!-- Loan Details -->
+    <div style="margin-bottom: 28px;">
+        <h3 style="color:#222; border-bottom:1px solid #eee; padding-bottom:6px;">Loan & Amount Details</h3>
+        <table style="width:100%; border-collapse:collapse;">
+            <tr><th>Loan Amount</th><td>{{ bill.amount }}</td><th>Total Amount</th><td>{{ bill.total_amount }}</td></tr>
+            <tr><th>Duration</th><td>{{ bill.duration }}</td><th>Payed Amount</th><td>{{ bill.payed_amount }}</td></tr>
+            <tr><th>EMI Due Date</th><td>{{ bill.emi_due_date|date:"Y-m-d" }}</td><th>Remaining Amount</th><td>{{ remaining }}</td></tr>
+            <tr><th>Initial Interest</th><td>{{ bill.initial_intrest }}</td><th>Interest Amount</th><td>{{ bill.intrest_amount }}</td></tr>
+            <tr><th>Current Interest</th><td>{{ bill.current_intrest }}</td><td></td><td></td></tr>
+        </table>
+    </div>
+    <div class="no-print">
+        <div class="actions" style="margin-top: 32px; text-align: right;">
+            <a href="{% url 'add_payment' bill.pk %}"><button >Payment</button></a>
+            <a href="{% url 'transaction_history' bill.pk %}" style="margin-right: 18px;"><button >View Transaction History</button></a>
+            <button  onclick="window.print()" style="margin-right: 18px;">Print This Page</button>
+            <a href="{% url 'print_bills' bill.pk %}"><button >Print Customer Copy</button></a>
+            <a href="{% url 'edit_customer' bill.pk %}" class="btn btn-warning">Edit</a>
+            <form action="{% url 'delete_customer' bill.pk %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

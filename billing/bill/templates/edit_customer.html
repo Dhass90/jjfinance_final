@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var addressInput = document.getElementById('id_address');
+    var nomineeAddressInput = document.getElementById('id_nominee_address');
+    if (addressInput && nomineeAddressInput) {
+        addressInput.addEventListener('input', function() {
+            nomineeAddressInput.value = addressInput.value;
+        });
+    }
+
+    function updateTotalWeight() {
+        let total = 0;
+        ['id_chain_weight','id_ring_weight','id_earing_weight','id_bracelet_weight','id_bangle_weight','id_necklace_weight','id_others_weight'].forEach(function(id) {
+            let el = document.getElementById(id);
+            if (el && el.value) {
+                let val = parseFloat(el.value);
+                if (!isNaN(val)) total += val;
+            }
+        });
+        let totalField = document.getElementById('id_ornament_weight');
+        if (totalField) totalField.value = total ? total.toFixed(2) : '';
+    }
+    ['id_chain_weight','id_ring_weight','id_earing_weight','id_bracelet_weight','id_bangle_weight','id_necklace_weight','id_others_weight'].forEach(function(id) {
+        let el = document.getElementById(id);
+        if (el) el.addEventListener('input', updateTotalWeight);
+    });
+    updateTotalWeight();
+});
+</script>
+{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div>{{ field.label }}: {{ error }}</div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div>{{ error }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div style="max-width: 700px; margin: 40px auto; background: #fff; border-radius: 14px; box-shadow: 0 2px 16px rgba(0,0,0,0.10); padding: 40px 48px;">
+        <h2 style="text-align:center; color:#35424a; margin-bottom: 32px;">Edit Customer</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <table style="width:100%; border-collapse:separate; border-spacing:0 14px;">
+                <!-- Customer Details -->
+                <tr>
+                    <td colspan="2" style="padding-top:18px; font-size:1.1em; color:#35424a; font-weight:700; border-bottom:1px solid #eee;">
+                        Customer Details
+                    </td>
+                </tr>
+                <tr>
+                    <td> {{ form.customer_id.label_tag }} <span style="color: #e74c3c;">*</span> </td>
+                    <td> {{ form.customer_id }} </td>
+                </tr>
+                <tr>
+                    <td> {{ form.fullname.label_tag }} <span style="color: #e74c3c;">*</span> </td>
+                    <td> {{ form.fullname }} </td>
+                </tr>
+                <tr>
+                    <td> {{ form.email.label_tag }} </td>
+                    <td> {{ form.email }} </td>
+                </tr>
+                <tr>
+                    <td> {{ form.phone1.label_tag }} <span style="color: #e74c3c;">*</span> </td>
+                    <td> {{ form.phone1 }} </td>
+                </tr>
+                <tr>
+                    <td> {{ form.phone2.label_tag }} </td>
+                    <td> {{ form.phone2 }} </td>
+                </tr>
+                <tr>
+                    <td> {{ form.dateofbirth.label_tag }}  </td>
+                    <td> {{ form.dateofbirth }} </td>
+                </tr>
+                <tr>
+                    <td> {{ form.address.label_tag }} <span style="color: #e74c3c;">*</span> </td>
+                    <td> {{ form.address }} </td>
+                </tr>
+                <tr>
+                    <td> {{ form.image.label_tag }} </td>
+                    <td> {{ form.image }} </td>
+                </tr>
+
+                <!-- Nominee Details -->
+                <tr>
+                    <td colspan="2" style="padding-top:18px; font-size:1.1em; color:#35424a; font-weight:700; border-bottom:1px solid #eee;">
+                        Nominee Details
+                    </td>
+                </tr>
+                <tr>
+                    <td> {{ form.nominee_name.label_tag }} <span style="color: #e74c3c;">*</span> </td>
+                    <td> {{ form.nominee_name }} </td>
+                </tr>
+                <tr>
+                    <td> {{ form.nominee_relation.label_tag }} <span style="color: #e74c3c;">*</span> </td>
+                    <td> {{ form.nominee_relation }} </td>
+                </tr>
+                <tr>
+                    <td> {{ form.nominee_phone.label_tag }} <span style="color: #e74c3c;">*</span> </td>
+                    <td> {{ form.nominee_phone }} </td>
+                </tr>
+                <tr>
+                    <td> {{ form.nominee_address.label_tag }} <span style="color: #e74c3c;">*</span> </td>
+                    <td> {{ form.nominee_address }} </td>
+                </tr>
+
+                <!-- Ornament Details -->
+                <tr>
+                    <td colspan="2" style="padding-top:18px; font-size:1.1em; color:#35424a; font-weight:700; border-bottom:1px solid #eee;">
+                        Ornament Details
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <table style="width:100%; border-collapse:collapse; background:#f9f9f9; border-radius:6px;">
+                            <thead>
+                                <tr style="background:#eaeaea;">
+                                    <th style="padding:8px;">Type</th>
+                                    <th style="padding:8px;">Name/Description</th>
+                                    <th style="padding:8px;">Count</th>
+                                    <th style="padding:8px;">Weight (g)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Chain</td>
+                                    <td>{{ form.chain }}</td>
+                                    <td>{{ form.chain_count }}</td>
+                                    <td>{{ form.chain_weight }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Ring</td>
+                                    <td>{{ form.ring }}</td>
+                                    <td>{{ form.ring_count }}</td>
+                                    <td>{{ form.ring_weight }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Earing</td>
+                                    <td>{{ form.earing }}</td>
+                                    <td>{{ form.earing_count }}</td>
+                                    <td>{{ form.earing_weight }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Bracelet</td>
+                                    <td>{{ form.bracelet }}</td>
+                                    <td>{{ form.bracelet_count }}</td>
+                                    <td>{{ form.bracelet_weight }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Bangle</td>
+                                    <td>{{ form.bangle }}</td>
+                                    <td>{{ form.bangle_count }}</td>
+                                    <td>{{ form.bangle_weight }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Necklace</td>
+                                    <td>{{ form.necklace }}</td>
+                                    <td>{{ form.necklace_count }}</td>
+                                    <td>{{ form.necklace_weight }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Others</td>
+                                    <td>{{ form.others_details }}</td>
+                                    <td>{{ form.others_count }}</td>
+                                    <td>{{ form.others_weight }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td> {{ form.ornament_weight.label_tag }} <span style="color: #e74c3c;">*</span> </td>
+                    <td> {{ form.ornament_weight }} </td>
+                </tr>
+                <tr>
+                    <td> {{ form.ornament_net_weight.label_tag }} <span style="color: #e74c3c;">*</span> </td>
+                    <td> {{ form.ornament_net_weight }} </td>
+                </tr>
+                <tr>
+                    <td> {{ form.ornament_image.label_tag }} </td>
+                    <td> {{ form.ornament_image }} </td>
+                </tr>
+
+                <!-- Loan Details -->
+                <tr>
+                    <td colspan="2" style="padding-top:18px; font-size:1.1em; color:#35424a; font-weight:700; border-bottom:1px solid #eee;">
+                        Loan Details
+                    </td>
+                </tr>
+                <tr>
+                    <td> {{ form.initial_intrest.label_tag }} <span style="color: #e74c3c;">*</span> </td>
+                    <td> {{ form.initial_intrest }} </td>
+                </tr>
+                <tr>
+                    <td> {{ form.amount.label_tag }} <span style="color: #e74c3c;">*</span> </td>
+                    <td> {{ form.amount }} </td>
+                </tr>
+                <tr>
+                    <td> {{ form.duration.label_tag }} <span style="color: #e74c3c;">*</span> </td>
+                    <td> {{ form.duration }} </td>
+                </tr>
+            </table>
+            <button type="submit" style="
+                margin-top: 28px;
+                width: 100%;
+                padding: 14px 0;
+                background: #35424a;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                font-size: 1.1em;
+                font-weight: 600;
+                letter-spacing: 1px;
+                cursor: pointer;
+                transition: background 0.2s;
+            ">Save Changes</button>
+        </form>
+    </div>
+{% else %}
+    <div style="text-align:center; margin-top:40px;">
+        <p style="color: #c0392b; font-size: 1.2em;">You must be logged in to edit a customer.</p>
+    </div>
+{% endif %}
+{% endblock %}

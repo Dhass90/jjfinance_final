@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block extra_head %}
+<style>
+    .receipt-container {
+        max-width: 480px;
+        margin: 40px auto;
+        background: #fff;
+        border: 2px solid #388e3c;
+        border-radius: 16px;
+        padding: 32px 32px 24px 32px;
+        box-shadow: 0 4px 24px rgba(56,142,60,0.10);
+        font-size: 15px;
+    }
+    .receipt-header {
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.4em;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+        color: #388e3c;
+    }
+    .receipt-sub {
+        text-align: center;
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 8px;
+    }
+    .receipt-title {
+        text-align: center;
+        font-size: 1.1em;
+        font-weight: 600;
+        margin-bottom: 18px;
+        color: #388e3c;
+    }
+    .receipt-table th, .receipt-table td {
+        padding: 7px 10px;
+        font-size: 1em;
+        border: none;
+    }
+    .receipt-table th {
+        color: #555;
+        width: 140px;
+        text-align: right;
+        font-weight: 600;
+        background: #f8f9fa;
+    }
+    .receipt-table td {
+        color: #222;
+        background: #fff;
+        text-align: left;
+    }
+    .receipt-footer {
+        margin-top: 18px;
+        font-size: 12px;
+        text-align: right;
+        color: #888;
+    }
+    .success-icon {
+        color: #388e3c;
+        font-size: 3em;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    @media print {
+        .no-print { display: none !important; }
+        .receipt-container { border: none; box-shadow: none; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="receipt-container">
+    <div class="success-icon no-print">
+        <span>&#10004;</span>
+    </div>
+    <div class="receipt-header no-print">Payment Successful!</div>
+    <div class="receipt-sub">
+        JJ FINANCIAL SERVICES<br>
+        KML No: 32050301951, Sacred Heart Church Building, Room No. 523D,Ground Floor, Monippally P.O, Kottayam -686636, Kerala<br>
+        Mob: +91 8156889434, +91 7306887881
+    </div>
+    <hr>
+    <div class="receipt-title">Payment Receipt</div>
+    <table class="receipt-table" style="width:100%;">
+        <tr><th>Customer Name:</th><td>{{ bill.fullname }}</td></tr>
+        <tr><th>Loan ID:</th><td>{{ bill.loan_id }}</td></tr>
+        <tr><th>Payment Date:</th><td>{{ payment.date|date:"Y-m-d H:i" }}</td></tr>
+        <tr><th>Amount Paid:</th><td><b style="color:#388e3c;">₹{{ payment.amount }}</b></td></tr>
+        <tr><th>Payment Method:</th><td>{{ payment.payment_method }}</td></tr>
+        <tr><th>Notes:</th><td>{{ payment.notes|default:"-" }}</td></tr>
+        <tr><th>Received By:</th><td>{{ user.username }}</td></tr>
+    </table>
+    <div class="receipt-footer">
+        Printed on {{ printed_time|date:"Y-m-d H:i:s" }}
+    </div>
+    <div class="text-center mt-3">
+        <button class="no-print btn btn-outline-secondary" onclick="window.print()">Print Receipt</button>
+        
+    </div>
+</div>
+{% endblock %}

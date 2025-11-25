@@ -1,0 +1,162 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JJ FINANCIAL SERVICES</title>
+    <style>
+         @media print {
+            .no-print { display: none; }}
+        :root {
+            --primary: #35424a;
+            --accent: #ffd700;
+            --nav-bg: #222;
+            --nav-hover: #575757;
+            --container-bg: #fff;
+            --shadow: 0 2px 12px rgba(0,0,0,0.07);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        body {
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background: var(--primary);
+            color: #fff;
+            padding: 24px 0 0 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        h1 {
+            margin-bottom: 8px;
+            font-size: 2.2em;
+            letter-spacing: 2px;
+        }
+        .navbar {
+            background: var(--nav-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .navbar a {
+            color: #fff;
+            padding: 16px 32px;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: background 0.2s, color 0.2s;
+            border-right: 1px solid #444;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+        .navbar a:last-child {
+            border-right: none;
+        }
+        .navbar a:hover, .navbar a.active {
+            background: var(--nav-hover);
+            color: var(--accent);
+        }
+        .container {
+            width: 90%;
+            max-width: 1120px;
+            margin: 40px auto 0 auto;
+            padding: 32px 28px 28px 28px;
+            background: var(--container-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            min-height: 400px;
+        }
+        .messages {
+            margin-bottom: 18px;
+            padding: 0;
+            list-style: none;
+        }
+        .messages li {
+            background: #eaf6ea;
+            color: #2e7d32;
+            border-left: 5px solid #43a047;
+            padding: 10px 16px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        @media (max-width: 900px) {
+            .container {
+                width: 100%;
+                padding: 18px 6px;
+            }
+            .navbar a {
+                padding: 12px 10px;
+                font-size: 1em;
+            }
+        }
+        @media (max-width: 600px) {
+            header {
+                padding: 16px 0 0 0;
+            }
+            h1 {
+                font-size: 1.3em;
+            }
+            .navbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .navbar a {
+                border-right: none;
+                border-bottom: 1px solid #444;
+                padding: 12px 0;
+            }
+            .navbar a:last-child {
+                border-bottom: none;
+            }
+            .container {
+                margin: 18px auto 0 auto;
+                min-height: 200px;
+            }
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header class='no-print'>
+        
+        <h1><img src="{% static 'images/logo.jpg' %}" alt="JJ Logo" style="height: 48px; margin-right: 18px;">JJ FINANCIAL SERVICES</h1>
+        <nav class="navbar">
+            <a href="{% url 'bill_view' %}">Home</a>
+            <a href="{% url 'home' %}">Create New</a>
+            <a href="{% url 'denomination_calculator' %}">Denomination</a>
+            <a href="{% url 'dashboard' %}">Timed View</a>
+            <a href="{% url 'emi_alerts' %}">Upcoming EMI</a>
+            
+           
+            {% if user.is_authenticated %}
+                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="background:none; border:none; color:#ffffff; cursor:pointer; font-size:1em;">Logout</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+                
+            
+        </nav>
+    </header>
+    <div class="container">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

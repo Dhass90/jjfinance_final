@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap">
+<style>
+    body { font-family: 'Roboto', Arial, sans-serif; }
+    .payment-card {
+        max-width: 600px;
+        margin: 48px auto;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+        padding: 40px 48px 32px 48px;
+    }
+    .payment-card h2 {
+        text-align: center;
+        color: #35424a;
+        margin-bottom: 32px;
+        font-size: 2em;
+        letter-spacing: 1px;
+    }
+    .loan-details-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 28px;
+    }
+    .loan-details-table th, .loan-details-table td {
+        padding: 12px 10px;
+        text-align: left;
+        font-size: 1.05em;
+    }
+    .loan-details-table th {
+        color: #555;
+        font-weight: 700;
+        background: #f4f4f4;
+        width: 200px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    .loan-details-table td {
+        color: #222;
+        background: #fff;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .highlight-value {
+        font-weight: bold;
+        font-size: 1.13em;
+        letter-spacing: 0.5px;
+    }
+    .interest-btn, .remaining-btn {
+        margin-left: 10px;
+        padding: 7px 20px;
+        border-radius: 5px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 1em;
+        transition: background 0.2s, color 0.2s;
+        box-shadow: 0 1px 4px rgba(56,142,60,0.07);
+    }
+    .interest-btn {
+        background: #e2f0cb;
+        color: #388e3c;
+        border: 1px solid #388e3c;
+    }
+    .interest-btn:hover {
+        background: #c8e6c9;
+        color: #256029;
+    }
+    .remaining-btn {
+        background: #ffdddd;
+        color: #d32f2f;
+        border: 1px solid #d32f2f;
+    }
+    .remaining-btn:hover {
+        background: #ffcdd2;
+        color: #a31515;
+    }
+    .status-select {
+        padding: 5px 12px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        background: #e9ecef;
+        color: #35424a;
+        font-weight: 600;
+    }
+    .form-section {
+        margin-top: 32px;
+    }
+    .form-section form {
+        margin-top: 0;
+    }
+    .form-section button[type="submit"] {
+        margin-top: 18px;
+        width: 100%;
+        padding: 13px 0;
+        background: #35424a;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 1.13em;
+        font-weight: 700;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: background 0.2s;
+        box-shadow: 0 2px 8px rgba(53,66,74,0.07);
+    }
+    .form-section button[type="submit"]:hover {
+        background: #222c35;
+    }
+    @media (max-width: 700px) {
+        .payment-card { padding: 18px 6px; }
+        .loan-details-table th { width: 120px; }
+    }
+</style>
+<script>
+function calculateInterest() {
+    var totalAmount = parseFloat("{{ remaining|default:0 }}");
+    var currentInterest = parseFloat("{{ bill.current_intrest|default:0 }}");
+    var days = parseInt(document.getElementById('interest-days').value) || 30;
+
+    // Update the label
+    document.getElementById('days-label').textContent = days;
+
+    if (isNaN(totalAmount) || isNaN(currentInterest)) {
+        document.getElementById('interest-amount').textContent = "Invalid data";
+        return 0;
+    }
+
+    var interest = totalAmount * currentInterest / 100 * days / 360;
+    document.getElementById('interest-amount').textContent = interest.toFixed(2);
+    return interest;
+}
+
+function addInterestToRemaining() {
+    var remaining = parseFloat("{{ remaining|default:0 }}");
+    var interest = calculateInterest();
+    if (isNaN(remaining) || isNaN(interest)) {
+        document.getElementById('new-remaining-amount').textContent = "Invalid data";
+        document.getElementById('confirm-btn-container').innerHTML = "";
+        return;
+    }
+    var newTotal = remaining + interest;
+    document.getElementById('new-remaining-amount').textContent =
+        remaining.toFixed(2) + " + " + interest.toFixed(2) + " = " + newTotal.toFixed(2);
+
+    // Hide the "Add Interest to Remaining" button
+    var addBtn = document.getElementById('add-interest-btn');
+    if (addBtn) addBtn.style.display = "none";
+
+    // Show the confirm button
+    document.getElementById('confirm-btn-container').innerHTML = `
+        <form method="post" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="add_interest" value="1">
+            <input type="hidden" name="interest_to_add" value="` + interest.toFixed(2) + `">
+            <button type="submit" class="remaining-btn" style="margin-left:10px;">
+                Confirm
+            </button>
+        </form>
+    `;
+}
+function showChangeIntrestBox() {
+    document.getElementById('change-intrest-btn').style.display = 'none';
+    document.getElementById('change-intrest-form').style.display = 'inline';
+    document.getElementById('new-intrest-input').focus();
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    var daysInput = document.getElementById('interest-days');
+    if (daysInput) {
+        daysInput.addEventListener('input', calculateInterest);
+    }
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="payment-card">
+    <h2>Add Payment</h2>
+    <div style="background: #f7f7f7; border-radius: 10px; padding: 22px 24px 16px 24px; margin-bottom: 28px;">
+        <h3 style="color:#222; margin-bottom: 16px; font-size:1.15em;">Loan Details</h3>
+        <table class="loan-details-table">
+            <tr>
+                <th>Loan ID:</th>
+                <td class="info-value">{{ bill.loan_id }}</td>
+            </tr>
+            <tr>
+                <th>Name:</th>
+                <td class="info-value">{{ bill.fullname }}</td>
+            </tr>
+             <tr>
+                <th>Burrowed Amount:</th>
+                <td class="info-value">{{ bill.amount }}</td>
+            </tr>
+            <tr>
+                <th>Total Amount:</th>
+                <td class="info-value">{{ bill.total_amount }}</td>
+            </tr>
+            <tr>
+                <th>Payed Amount:</th>
+                <td class="info-value">{{ bill.payed_amount }}</td>
+            </tr>
+            <tr>
+                <th>Remaining Amount:</th>
+                <td class="info-value">{{ remaining }}</td>
+            </tr>
+            <tr>
+                <th>Initial Interest Rate:</th>
+                <td class="info-value">{{ bill.initial_intrest }}</td>
+            </tr>
+            <tr>
+                <th>Current Interest Rate:</th>
+                <td class="info-value">{{ bill.current_intrest }}</td>
+            </tr>
+            
+            <tr>
+                <th>Current Interest Amount:</th>
+                <td class="info-value">{{ bill.intrest_amount }}</td>
+            </tr>
+            <tr>
+                <th>Status:</th>
+                <td>
+                    <form method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="status_update" value="1">
+                        <select name="status" onchange="this.form.submit()" class="status-select">
+                            <option value="True" {% if bill.status %}selected{% endif %} style="color:green;">Active</option>
+                            <option value="False" {% if not bill.status %}selected{% endif %} style="color:red;">Completed</option>
+                        </select>
+                    </form>
+                </td>
+            </tr>
+     
+            <tr>
+                <th>Current Interest Rate:</th>
+                <td class="info-value">
+                    <button type="button" id="change-intrest-btn" class="interest-btn" onclick="showChangeIntrestBox()">
+                        Change the Interest Rate
+                    </button>
+                    <form method="post" id="change-intrest-form" style="display:none; margin-top:8px;">
+                        {% csrf_token %}
+                        <input type="hidden" name="change_intrest" value="1" >
+                        <input type="number" value="{{ bill.current_intrest }}" step="0.01" min="0" name="new_intrest" id="new-intrest-input" style="width:80px; padding:4px 8px; border-radius:4px; border:1px solid #ccc;">
+                        <button type="submit" class="interest-btn" style="margin-left:6px;">Submit</button>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <th>Days for Interest Calculation:</th>
+                <td>
+                    <input type="number" id="interest-days" value="30" min="1" max="365" style="width:80px; padding:4px 8px; border-radius:4px; border:1px solid #ccc;">
+                </td>
+            </tr>
+            <tr>
+                <th>Interest Amount (<span id="days-label">30</span> days):</th>
+                <td>
+                    <span id="interest-amount" class="highlight-value" style="color:#388e3c;"></span>
+                    <button type="button" class="interest-btn" onclick="calculateInterest()">
+                        Check Interest Amount
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <th>New Remaining Amount:</th>
+                <td>
+                    <span id="new-remaining-amount" class="highlight-value" style="color:#d32f2f;"></span>
+                    <button type="button" id="add-interest-btn" class="remaining-btn" onclick="addInterestToRemaining()">
+                        Add Interest to Remaining
+                    </button>
+                    <div id="confirm-btn-container" style="display:inline;"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="form-section">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Add Payment</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,125 @@
+notes
+
+
+
+python manage.py startapp bill
+
+
+
+admin
+admin@gmail.com
+jomons1234#
+
+
+admin1234
+jomons@1234
+
+
+
+x intial date
+y next date
+
+if y>x+30
+
+if nextpayment date<today
+intrest rate = intrestrate +2
+
+
+
+payment cheythal mathra nextemi date = today+30days
+
+
+intrest Rate increase
+
+
+
+fullname ,email,phon1,phone2,dob,address,image,nominee name address relation phone,oranmentimagedetailsweight,initial intrest amount,duration
+
+
+@media print {
+            .no-print { display: none; }
+<button class="no-print" onclick="window.print()">Print This Page</button>
+
+
+
+
+    path('download-pdf/', views.download_pdf, name='download_pdf'),
+
+    
+@login_required
+def download_pdf(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="bills.pdf"'
+    p = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
+    y = height - 50
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(50, y, "Bill List")
+    y -= 30
+    bills = Billtable.objects.all()
+    for bill in bills:
+        p.setFont("Helvetica-Bold", 12)
+        p.drawString(50, y, f"Name: {bill.fullname}")
+        p.setFont("Helvetica", 12)
+        p.drawString(200, y, f"Phone: {bill.phone1}")
+        y -= 20
+        p.drawString(50, y, f"Email: {bill.email}")
+        y -= 20
+        p.drawString(50, y, f"Address: {bill.address}")
+        y -= 20
+        p.drawString(50, y, f"Created: {bill.created.strftime('%Y-%m-%d %H:%M')}")
+        y -= 20
+        if bill.image:
+            image_path = os.path.join(settings.MEDIA_ROOT, bill.image.name)
+            if os.path.exists(image_path):
+                try:
+                    p.drawImage(ImageReader(image_path), 400, y, width=80, height=80)
+                except Exception:
+                    p.drawString(400, y, "Image error")
+            y -= 90
+        else:
+            y -= 10
+        y -= 20
+        if y < 100:
+            p.showPage()
+            y = height - 50
+    p.save()
+    return response
+
+
+    chain chain_count chain_weight,earing earing_count,earing_weight,
+    ring ring_count ring_weight,bracelet bracelet_count,bracelet_weight,
+    bangle bangle_count bangle_weight,necklace necklace_count,necklace_weight,
+    others others_count others_weight
+
+    total amount*Current_intrest /100 *30/360
+
+    total amount = 10000+100
+
+
+    add payment page.
+
+    new column= intrest amount
+    when creating automatically calculate the first intrest
+    and then again
+
+    new page.
+    calculate intrest 
+    amount=
+    intrest=
+    intrest amount=
+
+    button to change intrest
+    button to add the intrest to remain 
+    problem need to see the 30 days
+    ok solution= before payment check the intrest amount. only on payment the data needs to enter to the db.
+    issue is  only 
+    
+
+    initial_intrest = models.CharField(max_length=15)
+    current_intrest = models.CharField(max_length=15, blank=True)
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    total_amount = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    payed_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'), blank=True, null=True)
+    duration = models.CharField(max_length=15)
+    emi_due_date = models.DateTimeField(blank=True, null=True)

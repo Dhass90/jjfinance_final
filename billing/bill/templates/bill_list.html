@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+
+<!-- jQuery and DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<!-- DataTables Buttons for export -->
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+
+<style>
+    .dataTables_wrapper .dataTables_filter input {
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        padding: 4px 8px;
+    }
+    .dataTables_wrapper .dataTables_length select {
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        padding: 2px 6px;
+    }
+    #billTable td, #billTable th {
+        vertical-align: middle;
+    }
+    #billTable tr:hover {
+        background: #f1f7ff;
+    }
+    #billTable a {
+        color: #35424a;
+        text-decoration: underline;
+        font-weight: 500;
+    }
+    #billTable a:hover {
+        color: #ffd700;
+    }
+    @media (max-width: 600px) {
+        #billTable th, #billTable td {
+            font-size: 0.95em;
+            padding: 6px 4px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <h1>All Bills</h1>
+    <div style="overflow-x:auto;">
+      <table id="billTable" class="display stripe hover" style="min-width:900px; width:100%;">
+          <thead>
+              <tr>
+                  <th>Date</th>
+                  <th>Loan ID</th>
+                  <th>Name</th>
+                  <th>Address</th>
+                  <th>Phone</th>
+                  <th>Initial Intrest</th>
+                  <th>Quantity</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Payment</th>
+                  <th>Detail View</th>
+              </tr>
+          </thead>
+          <tbody>
+          {% if bill %}
+              {% for i in bill %}
+              <tr>
+                  <td>{{ i.created|date:"Y-m-d"  }}</td>
+                  <td>{{ i.loan_id }}</td>
+                  <td>{{ i.fullname }}</td>
+                  <td>{{ i.address }}</td>
+                  <td>{{ i.phone1 }}</td>
+                  <td>{{ i.initial_intrest }}</td>
+                  <td>{{ i.ornament_net_weight }}</td>
+                  <td>{{ i.amount }}</td>
+
+                  <td>
+                      {% if i.status %}
+                          <span style="color: green; font-weight: bold;">Active</span>
+                      {% else %}
+                          <span style="color: red; font-weight: bold;">Completed</span>
+                      {% endif %}
+                  </td>
+                  <td><a href="{% url 'add_payment' i.id %}">Payment</a></td>
+                  <td><a href="{% url 'card' i.id %}">Detail View</a></td>
+              </tr>
+              {% endfor %}
+          {% else %}
+              <tr>
+                  <td colspan="9">No results found.</td>
+              </tr>
+          {% endif %}
+          </tbody>
+      </table>
+    </div>
+    <script>
+      $(document).ready(function() {
+        $('#billTable').DataTable({
+          dom: 'Bfrtip',
+          buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+          order: [[1, 'desc']]
+        });
+      });
+    </script>
+{% endblock %}

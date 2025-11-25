@@ -1,0 +1,109 @@
+    {% extends 'base.html' %}
+
+    {% block extra_head %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <style>
+        .overdue { background: #ffdddd !important; }      /* Light red */
+        .due_1   { background: #ffe0b2 !important; }      /* Light orange */
+        .due_2   { background: #fff3cd !important; }      /* Light yellow */
+        .due_3   { background: #e1f5fe !important; }      /* Light blue */
+        .due_7   { background: #e2f0cb !important; }      /* Light green */
+        .clear   { background: #f7f7f7 !important; }      /* Light gray */
+        .countdown { font-weight: bold; font-size: 1.1em; }
+    </style>
+    <script>
+    function startCountdowns() {
+        document.querySelectorAll('.countdown').forEach(function(span) {
+            var due = new Date(span.getAttribute('data-due'));
+            function updateCountdown() {
+                var now = new Date();
+                var diff = due - now;
+                if (diff < 0) {
+                    span.textContent = "Overdue";
+                    span.style.color = "red";
+                    return;
+                }
+                var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                var minutes = Math.floor((diff / (1000 * 60)) % 60);
+                var seconds = Math.floor((diff / 1000) % 60);
+                span.textContent = days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+                if (days <= 0) {
+                    span.style.color = "red";
+                }else if (days <= 1) {
+                    span.style.color = "#ff6600ff";
+                } else if (days <= 2) {
+                    span.style.color = "#965103ff";
+                }else if (days <= 3) {
+                    span.style.color = "#ff9800";
+                } else if (days <= 7) {
+                    span.style.color = "#43a047";
+                } else {
+                    span.style.color = "#35424a";
+                }
+            }
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        $('#emiTable').DataTable({
+            "order": [[3, "asc"]]
+        });
+        startCountdowns();
+    });
+    </script>
+    {% endblock %}
+
+    {% block content %}
+    <h2 style="text-align:center; color:#35424a;">EMI Due Alerts</h2>
+    <div style="overflow-x:auto;">
+    <table id="emiTable" class="display" style="width:100%; border-collapse:collapse; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <thead>
+            <tr style="background:#35424a; color:#fff;">
+                <th>Loan ID</th>
+                <th>Name</th>
+                <th>Customer Details</th>
+                <th>EMI Due Date</th>
+                <th>Countdown</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in emi_list %}
+            <tr class="{{ item.status }}">
+                <td>{{ item.customer.loan_id }}</td>
+                <td>{{ item.customer.fullname }}</td>
+                <td><a href="{% url 'card' item.customer.id %}">Details</a></td>
+                <td>{{ item.emi_due_date|date:"Y-m-d H:i" }}</td>
+                <td>
+                    <span class="countdown" data-due="{{ item.emi_due_date|date:'Y-m-d\\TH:i:s' }}"></span>
+                </td>
+                <td>
+                    {% if item.status == 'overdue' %}
+                        <span style="color:#d32f2f; font-weight:bold;">Overdue</span>
+                    {% elif item.status == 'due_1' %}
+                        <span style="color:#ff9800; font-weight:bold;">Due in 1 day</span>
+                    {% elif item.status == 'due_2' %}
+                        <span style="color:#fbc02d; font-weight:bold;">Due in 2 days</span>
+                    {% elif item.status == 'due_3' %}
+                        <span style="color:#0288d1; font-weight:bold;">Due in 3 days</span>
+                    {% elif item.status == 'due_7' %}
+                        <span style="color:#388e3c; font-weight:bold;">Due in 7 days</span>
+                    {% else %}
+                        <span style="color:#35424a;">All clear</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5" style="text-align:center; color:#888;">No customers found.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+    {% endblock %}
