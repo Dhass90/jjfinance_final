@@ -1,246 +1,251 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
 
- {% block extra_head %}
- <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var addressInput = document.getElementById('id_address');
-    var nomineeAddressInput = document.getElementById('id_nominee_address');
+{% block extra_head %}
+    <meta charset="UTF-8">
+    <title>JJ FINANCIAL SERVICES{{ bill.fullname }}</title>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            .page-break { page-break-before: always; }
+            body, .container, .page { margin: 0 !important; box-shadow: none !important; border-radius: 0 !important; }
+            @page { margin: 0; }
+        }
+        body {
+            font-family: 'Noto Sans Malayalam', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #fff;
+        }
+        .container_new, .page_new {
+            max-width: 900px;
+            margin: 20px auto;
+            background: #fff;
+            padding-left: 15px;
+            padding-right: 15px;
+            border: 2px solid #222;
+            box-sizing: border-box;
+        }
+        .header, .footer {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .section { margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; }
+        td, th { padding: 4px 6px; vertical-align: top; }
+        .bold { font-weight: bold; }
+        .right { text-align: right; }
+        .box { border: 1px solid #000; padding: 8px; }
+        .thumb { width: 80px; height: 100px; border: 1px solid #000; }
+        .rules { margin-top: 10px; }
+        .rules li { margin-bottom: 6px; }
+        .foot-logos { display: flex; gap: 8px; align-items: center; justify-content: space-between; margin-top: 10px; border-top: 1px solid #ddd; padding-top: 8px; }
+        .logo-box { flex: 1; text-align: center; font-size: 11px; }
+        .logo-box img { max-width: 100%; height: auto; display: block; margin: 0 auto 4px; }
+        .contacts { font-size: 11px; color: #222; }
 
-    if (addressInput && nomineeAddressInput) {
-        addressInput.addEventListener('input', function() {
-            nomineeAddressInput.value = addressInput.value;
-        });
-    }
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    function updateTotalWeight() {
-        let total = 0;
-        // List all your weight field IDs here
-        ['id_chain_weight','id_ring_weight','id_earing_weight','id_bracelet_weight','id_bangle_weight','id_necklace_weight','id_others_weight'].forEach(function(id) {
-            let el = document.getElementById(id);
-            if (el && el.value) {
-                let val = parseFloat(el.value);
-                if (!isNaN(val)) total += val;
-            }
-        });
-        let totalField = document.getElementById('id_ornament_weight');
-        if (totalField) totalField.value = total ? total.toFixed(2) : '';
-    }
-
-    // Attach to all weight fields
-    ['id_chain_weight','id_ring_weight','id_earing_weight','id_bracelet_weight','id_bangle_weight','id_necklace_weight','id_others_weight'].forEach(function(id) {
-        let el = document.getElementById(id);
-        if (el) el.addEventListener('input', updateTotalWeight);
-    });
-
-    // Initial calculation
-    updateTotalWeight();
-});
-</script>
-    
-{% endblock %} 
+        /* ---- FIXED IMAGE SIZE ---- */
+        .fixed-img-box {
+            width: 100px;
+            height: 120px;
+            border: 1px solid #eee;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .fixed-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* stays within height limit */
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-{% if user.is_authenticated %}
-    {% if form.errors %}
-        <div class="alert alert-danger">
-            {% for field in form %}
-                {% for error in field.errors %}
-                    <div>{{ field.label }}: {{ error }}</div>
-                {% endfor %}
-            {% endfor %}
-            {% for error in form.non_field_errors %}
-                <div>{{ error }}</div>
-            {% endfor %}
+<div class="container_new" style="max-width: 900px; margin: 20px auto; border: 2px solid #222; border-radius: 10px; padding: 10px 8px; font-size: 10px;">
+    <div class="header" style="margin-bottom: 8px;">
+        <img src="{% static 'images/logo.jpg' %}" alt="JJ Logo" style="height: 48px; margin-right: 18px;">
+        <h2 style="margin-bottom: 4px; font-size: 1.1em;">JJ FINANCIAL SERVICES</h2>
+        <p style="margin:0; font-size: 10px;">
+            KML No: 32050301951, Sacred Heart Church Building, Room No. 523D, Ground Floor, Monippally P.O, Kottayam -686636, Kerala<br>
+            Mob: +91 8156889434, +91 7306887881
+        </p>
+        <hr style="margin: 6px 0;">
+        <h4 style="margin:0; font-size: 1em;">Customer Copy</h4>
+    </div>
+
+    <div class="section" style="margin-bottom: 6px;">
+        <table style="width:100%; font-size: 10px;">
+            <tr>
+                <td class="bold">അപേക്ഷകൻ്റെ പേര്:</td>
+                <td>{{ bill.fullname }}</td>
+                <td class="bold">ലോൺ നമ്പർ:</td>
+                <td>{{ bill.loan_id }}</td>
+            </tr>
+            <tr>
+                <td class="bold">വിലാസം:</td>
+                <td>{{ bill.address }}</td>
+                <td class="bold">മൊബൈൽ നമ്പർ:</td>
+                <td>{{ bill.phone1 }}</td>
+            </tr>
+            <tr>
+                <td class="bold">നോമിനി:</td>
+                <td>{{ bill.nominee_name }}</td>
+                <td class="bold">ബന്ധം:</td>
+                <td>{{ bill.nominee_relation }}</td>
+            </tr>
+            <tr>
+                <td class="bold">കസ്റ്റമർ നമ്പർ:</td>
+                <td>{{ bill.customer_id }}</td>
+                <td class="bold">തിയ്യതി:</td>
+                <td>{{ bill.created|date:"Y-m-d" }}</td>
+            </tr>
+            <tr>
+                <td class="bold">പലിശ നിരക്ക്:</td>
+                <td>{{ bill.initial_intrest }}% (Compound)</td>
+                <td class="bold">വായ്പാ തുക:</td>
+                <td>₹{{ bill.amount }}</td>
+            </tr>
+
+            <!-- ★ FIXED HEIGHT CUSTOMER IMAGE -->
+            <tr>
+                <td class="bold">Customer Image:</td>
+                <td>
+                    {% if bill.image %}
+                        <div class="fixed-img-box">
+                            <img src="{{ bill.image.url }}" alt="Customer Image">
+                        </div>
+                    {% else %}
+                        No image
+                    {% endif %}
+                </td>
+
+                <!-- ★ FIXED HEIGHT ORNAMENT IMAGE -->
+                <td class="bold">Ornament Image:</td>
+                <td>
+                    {% if bill.ornament_image %}
+                        <div class="fixed-img-box">
+                            <img src="{{ bill.ornament_image.url }}" alt="Ornament Image">
+                        </div>
+                    {% else %}
+                        No image
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section" style="margin-bottom: 6px;">
+        <p class="bold" style="margin:0;">സ്വർണ്ണം:</p>
+        <table border="1" style="font-size: 10px;">
+            <tr>
+                <th>Type</th>
+                <th>Number</th>
+                <th>Total Net Weight</th>
+            </tr>
+            <tr><td>Bangle</td><td>{{bill.bangle_count}} no.s</td><td>{{ bill.bangle_weight }} gm</td></tr>
+            <tr><td>Chain</td><td>{{bill.chain_count}} no.s</td><td>{{ bill.chain_weight }} gm</td></tr>
+            <tr><td>Ring</td><td>{{bill.ring_count}} no.s</td><td>{{ bill.ring_weight }} gm</td></tr>
+            <tr><td>Necklace</td><td>{{bill.necklace_count}} no.s</td><td>{{ bill.necklace_weight }} gm</td></tr>
+            <tr><td>Bracelet</td><td>{{bill.bracelet_count}} no.s</td><td>{{ bill.bracelet_weight }} gm</td></tr>
+            <tr><td>Other:{{bill.others_details}}</td><td>{{bill.others_count}} no.s</td><td>{{ bill.others_weight }} gm</td></tr>
+            <tr>
+                <td colspan="2" style="text-align: right; font-weight: bold;">Total Weight =</td>
+                <td style="font-weight: bold;">{{ bill.ornament_weight }} gm</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section" style="font-size: 10px;">
+        <b>വ്യക്തിപരമായ ആവശ്യത്തിലേക്കായി എനിക്ക് ജെ.ജെ. ഫിനാൻഷ്യൽ സർവീസിൽ നിന്നും <u><b>{{bill.amount}}</b></u> രൂപ വായ്പയായി...</b>
+        <br><br>
+        ജെ.ജെ. ഫിനാൻഷ്യൽ സർവീസിൽ നിന്നും ഇന്നേ ദിവസം...
+    </div>
+
+    <div style="margin-top: 10px;">
+        <table style="width:100%; font-size: 10px;">
+            <tr>
+                <td><b>സ്ഥലം:</b> _________</td>
+                <td><b>വായ്പക്കാരൻ്റെ പേര്:</b><u><b>{{bill.fullname}}</b></u> </td>
+            </tr>
+            <tr>
+                <td><b>തീയതി:</b> {{ bill.created|date:"Y-m-d" }}</td>
+                <td><b>ഒപ്പ്:</b> _________</td>
+            </tr>   
+        </table>
+    </div>
+
+    <div class="section box" style="font-size: 10px; font-weight: bold; text-align: center;">
+        <div style="font-size: 12px; font-weight: bold; text-align: center; text-decoration: underline; margin-bottom: 8px;">
+            പണയ ആഭരണങ്ങൾ തിരികെ കൈപ്പറ്റുന്നതിനുള്ള രസീത്
         </div>
-    {% endif %}
-    <div style="max-width: 700px; margin: 40px auto; background: #fff; border-radius: 14px; box-shadow: 0 2px 16px rgba(0,0,0,0.10); padding: 40px 48px;">
-        <h2 style="text-align:center; color:#35424a; margin-bottom: 32px;">Register New Customer</h2>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <table style="width:100%; border-collapse:separate; border-spacing:0 14px;">
-                <!-- Customer Details -->
-                <tr>
-                    <td colspan="2" style="padding-top:18px; font-size:1.1em; color:#35424a; font-weight:700; border-bottom:1px solid #eee;">
-                        Customer Details
-                    </td>
-                </tr>
-                <tr>
-                    <td> {{ form.customer_id.label_tag }} <span style="color: #e74c3c;">*</span> </td>
-                    <td> {{ form.customer_id }} </td>
-                </tr>
-                <tr>
-                    <td> {{ form.fullname.label_tag }} <span style="color: #e74c3c;">*</span> </td>
-                    <td> {{ form.fullname }} </td>
-                </tr>
-                <tr>
-                    <td> {{ form.email.label_tag }} </td>
-                    <td> {{ form.email }} </td>
-                </tr>
-                <tr>
-                    <td> {{ form.phone1.label_tag }} <span style="color: #e74c3c;">*</span> </td>
-                    <td> {{ form.phone1 }} </td>
-                </tr>
-                <tr>
-                    <td> {{ form.phone2.label_tag }} </td>
-                    <td> {{ form.phone2 }} </td>
-                </tr>
-                <tr>
-                    <td> {{ form.dateofbirth.label_tag }}  </td>
-                    <td> {{ form.dateofbirth }} </td>
-                </tr>
-                <tr>
-                    <td> {{ form.address.label_tag }} <span style="color: #e74c3c;">*</span> </td>
-                    <td> {{ form.address }} </td>
-                </tr>
-                <tr>
-                    <td> {{ form.image.label_tag }} </td>
-                    <td> {{ form.image }} </td>
-                </tr>
+        <div class="receipt-body" style="font-size: 10px; margin-bottom: 10px;">
+            ടി വായ്പയുടെ ഉറപ്പിലേയ്ക്കായി നൽകിയിരുന്ന...
+        </div>
 
-                <!-- Nominee Details -->
-                <tr>
-                    <td colspan="2" style="padding-top:18px; font-size:1.1em; color:#35424a; font-weight:700; border-bottom:1px solid #eee;">
-                        Nominee Details
-                    </td>
-                </tr>
-                <tr>
-                    <td> {{ form.nominee_name.label_tag }} <span style="color: #e74c3c;">*</span> </td>
-                    <td> {{ form.nominee_name }} </td>
-                </tr>
-                <tr>
-                    <td> {{ form.nominee_relation.label_tag }} <span style="color: #e74c3c;">*</span> </td>
-                    <td> {{ form.nominee_relation }} </td>
-                </tr>
-                <tr>
-                    <td> {{ form.nominee_phone.label_tag }} <span style="color: #e74c3c;">*</span> </td>
-                    <td> {{ form.nominee_phone }} </td>
-                </tr>
-                <tr>
-                    <td> {{ form.nominee_address.label_tag }} <span style="color: #e74c3c;">*</span> </td>
-                    <td> {{ form.nominee_address }} </td>
-                </tr>
-
-                <!-- Ornament Details -->
-                <tr>
-                    <td colspan="2" style="padding-top:18px; font-size:1.1em; color:#35424a; font-weight:700; border-bottom:1px solid #eee;">
-                        Ornament Details
-                    </td>
-                </tr>
-                
-                
-                
-                
-                <tr>
-                    <td colspan="2">
-                        <table style="width:100%; border-collapse:collapse; background:#f9f9f9; border-radius:6px;">
-                            <thead>
-                                <tr style="background:#eaeaea;">
-                                    <th style="padding:8px;">Type</th>
-                                    <th style="padding:8px;">Name/Description</th>
-                                    <th style="padding:8px;">Count</th>
-                                    <th style="padding:8px;">Weight (g)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Chain</td>
-                                    <td>{{ form.chain }}</td>
-                                    <td>{{ form.chain_count }}</td>
-                                    <td>{{ form.chain_weight }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Ring</td>
-                                    <td>{{ form.ring }}</td>
-                                    <td>{{ form.ring_count }}</td>
-                                    <td>{{ form.ring_weight }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Earing</td>
-                                    <td>{{ form.earing }}</td>
-                                    <td>{{ form.earing_count }}</td>
-                                    <td>{{ form.earing_weight }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Bracelet</td>
-                                    <td>{{ form.bracelet }}</td>
-                                    <td>{{ form.bracelet_count }}</td>
-                                    <td>{{ form.bracelet_weight }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Bangle</td>
-                                    <td>{{ form.bangle }}</td>
-                                    <td>{{ form.bangle_count }}</td>
-                                    <td>{{ form.bangle_weight }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Necklace</td>
-                                    <td>{{ form.necklace }}</td>
-                                    <td>{{ form.necklace_count }}</td>
-                                    <td>{{ form.necklace_weight }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Others</td>
-                                     <td> {{ form.others_details }} </td>
-                                    <td>{{ form.others_count }}</td>
-                                    <td>{{ form.others_weight }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td> {{ form.ornament_weight.label_tag }} <span style="color: #e74c3c;">*</span> </td>
-                    <td> {{ form.ornament_weight }} </td>
-                </tr>
-                <tr>
-                    <td> {{ form.ornament_net_weight.label_tag }} <span style="color: #e74c3c;">*</span> </td>
-                    <td> {{ form.ornament_net_weight }} </td>
-                </tr>
-                <tr>
-                    <td> {{ form.ornament_image.label_tag }} </td>
-                    <td> {{ form.ornament_image }} </td>
-                </tr>
-
-                <!-- Loan Details -->
-                <tr>
-                    <td colspan="2" style="padding-top:18px; font-size:1.1em; color:#35424a; font-weight:700; border-bottom:1px solid #eee;">
-                        Loan Details
-                    </td>
-                </tr>
-                <tr>
-                    <td> {{ form.initial_intrest.label_tag }} <span style="color: #e74c3c;">*</span> </td>
-                    <td> {{ form.initial_intrest }} </td>
-                </tr>
-                <tr>
-                    <td> {{ form.amount.label_tag }} <span style="color: #e74c3c;">*</span> </td>
-                    <td> {{ form.amount }} </td>
-                </tr>
-                <tr>
-                    <td> {{ form.duration.label_tag }} <span style="color: #e74c3c;">*</span> </td>
-                    <td> {{ form.duration }} </td>
-                </tr>
-            </table>
-            <button type="submit" style="
-                margin-top: 28px;
-                width: 100%;
-                padding: 14px 0;
-                background: #35424a;
-                color: #fff;
-                border: none;
-                border-radius: 5px;
-                font-size: 1.1em;
-                font-weight: 600;
-                letter-spacing: 1px;
-                cursor: pointer;
-                transition: background 0.2s;
-            ">Register</button>
-        </form>
+        <table style="width:100%; font-size: 10px; margin-top: 10px;">
+            <tr>
+                <td><b>സ്ഥലം:</b> _________</td>
+                <td><b>വായ്പക്കാരൻ്റെ ഒപ്പ്:</b> _________</td>
+            </tr>
+            <tr>
+                <td><b>തീയതി:</b> _________</td>
+                <td></td>
+            </tr>
+        </table>
     </div>
-{% else %}
-    <div style="text-align:center; margin-top:40px;">
-        <p style="color: #c0392b; font-size: 1.2em;">You must be logged in to register a customer.</p>
+
+    <div class="footer">
+        <hr>
+        <p style="font-size:9px;">Printed on {{ printed_time|date:"Y-m-d H:i:s" }}</p>
     </div>
-{% endif %}
+</div>
+
+<div class="page-break"></div>
+
+<!-- PAGE 2: TERMS & CONDITIONS -->
+<div class="page_new" style="font-size: 12px; line-height: 1.2; padding: 12px 12px 8px 12px; max-width: 900px; margin: 0 auto;">
+    <header>
+        <h1 style="text-align:center; font-size: 15px; margin-bottom: 4px;">നിബന്ധനകൾ</h1>
+    </header>
+
+    <hr class="line" style="margin: 6px 0;" />
+
+    <div>
+        <p><b>1.</b> കുറഞ്ഞ പലിശ 200 രൂപയായി നിജപ്പെടുത്തിയിരിക്കുന്നു...</p>
+        <p><b>2.</b> പ്രവൃത്തി ദിവസങ്ങളിലെ ഓഫീസ് സമയങ്ങളിൽ മാത്രമേ...</p>
+        <p><b>3.</b> വായ്പ പദ്ധതികൾ/പലിശ നിരക്കുകൾ...</p>
+        <p><b>4.</b> വായ്പാ തുക പലിശ സഹിതം...</p>
+        <p><b>5.</b> വായ്പാ തുകയോ പലിശയോ തിരിച്ചടക്കാൻ...</p>
+        <p><b>6.</b> പണയ രസീത് നഷ്ടമാകുന്ന സാഹചര്യത്തിൽ...</p>
+        <p><b>7.</b> വായ്പ ഭാഗികമായാണ് തിരിച്ചടക്കുന്നതെങ്കിൽ...</p>
+        <p><b>8.</b> വായ്പ അപേക്ഷയിൽ നൽകിയിരിക്കുന്ന മേൽവിലാസത്തിലോ...</p>
+        <p><b>9.</b> പലിശ, മുതൽ തിരിച്ചടവ് ഓർമ്മപ്പെടുത്തിക്കൊണ്ടും...</p>
+        <p><b>10.</b> ഈടായി ഹാജരാക്കുന്ന സ്വർണ്ണ ഉരുപ്പടികളുടെ...</p>
+        <p><b>11.</b> വിലപിടിപ്പുള്ള ഡയമണ്ട് മുതലായ കല്ല് പതിച്ച...</p>
+        <p><b>12.</b> പണയപ്പെടുത്തുന്ന ആഭരണം പൂർണ്ണമായും...</p>
+        <p><b>13.</b> വായ്പ തിരികെ അടയ്ക്കുവാൻ നിശ്ചയിക്കുന്ന...</p>
+        <p><b>14.</b> പണയം വച്ച ആഭരണം ലേലത്തിലേക്ക്...</p>
+        <p><b>15.</b> ഏതെങ്കിലും ഒരു വായ്പ പദ്ധതി...</p>
+        <p><b>16.</b> ഈ വായ്പാ സംബന്ധമായ എല്ലാ രേഖകളും...</p>
+
+        <p>ജെ.ജെ. ഫിനാൻഷ്യൽ സർവീസിൽ നിന്നും നൽകുന്ന...</p>
+    </div>
+
+    <div style="margin-top: 12px;">
+        <table style="margin-top:12px; font-size: 12px;">
+            <tr>
+                <td><b>സ്ഥലം:</b> _________</td>
+                <td><b>പേര്:</b> _________</td>
+            </tr>
+            <tr>
+                <td><b>തീയതി:</b> {{ printed_time|date:"Y-m-d" }}</td>
+                <td><b>ഒപ്പ്:</b> _________</td>
+            </tr>
+        </table>
+    </div>
+
+    <br>
+    <center><button class="no-print" onclick="window.print()">Print This Page</button></center>
+</div>
+
 {% endblock %}
